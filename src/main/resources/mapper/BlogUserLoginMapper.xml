@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.alex.blog.mapper.BlogUserLoginMapper" >
+	<!-- Base Result Map-->
+	<resultMap id="BaseResultMap" type="com.alex.blog.model.BlogUserLogin" >
+		<result column="user_id" property="userId"/>
+		<result column="open_id" property="openId"/>
+		<result column="account" property="account"/>
+		<result column="password" property="password"/>
+		<result column="mobile" property="mobile"/>
+		<result column="email" property="email"/>
+		<result column="password_expiry_date" property="passwordExpiryDate"/>
+		<result column="account_status" property="accountStatus"/>
+		<result column="failed_logins" property="failedLogins"/>
+		<result column="create_time" property="createTime"/>
+		<result column="update_time" property="updateTime"/>
+	</resultMap>
+
+	<!-- Extend Result Map-->
+	<resultMap id="extendResultMap" extends="BaseResultMap" type="com.alex.blog.model.BlogUserLogin">
+	</resultMap>
+       
+	<!-- blog_user_login table all fields -->
+	<sql id="Base_Column_List" >
+		a.user_id,a.open_id,a.account,a.password,a.mobile,a.email,a.password_expiry_date,a.account_status,a.failed_logins,a.create_time,a.update_time
+	</sql>
+
+	<sql id="Extend_Column_List" >
+		a.*
+	</sql>
+   
+	<!-- 基本查询条件 -->
+	<sql id="Example_Where_Clause">
+		<where>
+			<trim  suffixOverrides="," >
+				<if test="userId != null" > and user_id =  #{userId}</if>
+				<if test="openId != null" > and open_id =  #{openId}</if>
+				<if test="account != null" > and account =  #{account}</if>
+				<if test="password != null" > and password =  #{password}</if>
+				<if test="mobile != null" > and mobile =  #{mobile}</if>
+				<if test="email != null" > and email =  #{email}</if>
+				<if test="passwordExpiryDate != null" > and password_expiry_date =  #{passwordExpiryDate}</if>
+				<if test="accountStatus != null" > and account_status =  #{accountStatus}</if>
+				<if test="failedLogins != null" > and failed_logins =  #{failedLogins}</if>
+				<if test="createTime != null" > and create_time =  #{createTime}</if>
+				<if test="updateTime != null" > and update_time =  #{updateTime}</if>
+			</trim>
+		</where>
+	</sql>
+   
+	<!-- 插入记录 -->
+	<insert id="save" parameterType="com.alex.blog.model.BlogUserLogin" useGeneratedKeys="true" keyProperty="userId" >
+		insert into blog_user_login( 
+		<trim  suffixOverrides="," >
+			<if test="openId != null">open_id,</if>
+			<if test="account != null">account,</if>
+			<if test="password != null">password,</if>
+			<if test="mobile != null">mobile,</if>
+			<if test="email != null">email,</if>
+			<if test="passwordExpiryDate != null">password_expiry_date,</if>
+			<if test="accountStatus != null">account_status,</if>
+			<if test="failedLogins != null">failed_logins,</if>
+			<if test="createTime != null">create_time,</if>
+			<if test="updateTime != null">update_time,</if>
+		</trim>
+		) values(
+		<trim  suffixOverrides="," >
+			<if test="openId != null">#{openId},</if>
+			<if test="account != null">#{account},</if>
+			<if test="password != null">#{password},</if>
+			<if test="mobile != null">#{mobile},</if>
+			<if test="email != null">#{email},</if>
+			<if test="passwordExpiryDate != null">#{passwordExpiryDate},</if>
+			<if test="accountStatus != null">#{accountStatus},</if>
+			<if test="failedLogins != null">#{failedLogins},</if>
+			<if test="createTime != null">now(),</if>
+			<if test="updateTime != null">now(),</if>
+		</trim>
+		)
+	</insert>
+	
+	<!-- 批量插入记录 -->
+	<insert id="saveBatch" parameterType="java.util.List">
+    	insert into blog_user_login(
+			user_id,open_id,account,password,mobile,email,password_expiry_date,account_status,failed_logins,create_time,update_time
+		) values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.userId},#{item.openId},#{item.account},#{item.password},#{item.mobile},#{item.email},#{item.passwordExpiryDate},#{item.accountStatus},#{item.failedLogins},#{item.createTime},#{item.updateTime})
+		</foreach>  
+  	</insert>
+
+	<!-- 根据id，修改记录-->  
+	<update id="update" parameterType="com.alex.blog.model.BlogUserLogin" >
+		update blog_user_login 
+		set open_id=#{openId},account=#{account},password=#{password},mobile=#{mobile},email=#{email},password_expiry_date=#{passwordExpiryDate},account_status=#{accountStatus},failed_logins=#{failedLogins},create_time=now(),update_time=now() 
+		where user_id=#{userId}
+	</update>
+ 
+	<!-- 修改记录，只修改只不为空的字段 -->
+	<update id="updateSelective" parameterType="com.alex.blog.model.BlogUserLogin" >
+		update blog_user_login set 
+		<trim  suffixOverrides="," >
+			<if test="openId != null "> open_id=#{openId},</if>
+			<if test="account != null "> account=#{account},</if>
+			<if test="password != null "> password=#{password},</if>
+			<if test="mobile != null "> mobile=#{mobile},</if>
+			<if test="email != null "> email=#{email},</if>
+			<if test="passwordExpiryDate != null "> password_expiry_date=#{passwordExpiryDate},</if>
+			<if test="accountStatus != null "> account_status=#{accountStatus},</if>
+			<if test="failedLogins != null "> failed_logins=#{failedLogins},</if>
+			<if test="createTime != null "> create_time=#{createTime},</if>
+			<if test="updateTime != null "> update_time=#{updateTime},</if>
+		</trim>
+		where user_id=#{userId}
+	</update>
+
+	<!-- 修改记录，只修改只不为空的字段 -->
+	<update id="updateQuery" >
+		update blog_user_login set 
+		<trim  suffixOverrides="," >
+			<if test="entity.openId != null "> open_id=#{entity.openId},</if>
+			<if test="entity.account != null "> account=#{entity.account},</if>
+			<if test="entity.password != null "> password=#{entity.password},</if>
+			<if test="entity.mobile != null "> mobile=#{entity.mobile},</if>
+			<if test="entity.email != null "> email=#{entity.email},</if>
+			<if test="entity.passwordExpiryDate != null "> password_expiry_date=#{entity.passwordExpiryDate},</if>
+			<if test="entity.accountStatus != null "> account_status=#{entity.accountStatus},</if>
+			<if test="entity.failedLogins != null "> failed_logins=#{entity.failedLogins},</if>
+			<if test="entity.createTime != null "> create_time=#{entity.createTime},</if>
+			<if test="entity.updateTime != null "> update_time=#{entity.updateTime},</if>
+		</trim>
+	</update>
+
+	<!-- 删除记录 -->
+	<delete id="delete" parameterType="Object">
+		delete from blog_user_login
+		where user_id = #{userId}
+	</delete>
+	
+	<!-- 按id批量删除记录 -->
+	<delete id="deleteBatchIds">
+		delete from blog_user_login
+		<where>
+			user_id in
+			<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</where>
+	</delete>
+	
+	<!-- 按条件批量删除记录 -->
+	<delete id="deleteBatch" parameterType = "com.alex.blog.model.BlogUserLogin">
+		delete from blog_user_login
+		<include refid="Example_Where_Clause"/> 
+	</delete>
+
+
+	<!-- 根据id查询 ${codeName} -->
+	<select id="queryId"  resultMap="BaseResultMap" parameterType="Object">
+		select 
+			 <include refid="Base_Column_List" /> 
+		from blog_user_login a
+		WHERE a.user_id = #{userId}
+	</select>
+
+</mapper>   

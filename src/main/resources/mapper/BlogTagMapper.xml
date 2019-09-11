@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.alex.blog.mapper.BlogTagMapper" >
+	<!-- Base Result Map-->
+	<resultMap id="BaseResultMap" type="com.alex.blog.model.BlogTag" >
+		<result column="id" property="id"/>
+		<result column="tag_name" property="tagName"/>
+		<result column="tag_code" property="tagCode"/>
+		<result column="order_sort" property="orderSort"/>
+		<result column="create_time" property="createTime"/>
+		<result column="update_time" property="updateTime"/>
+	</resultMap>
+
+	<!-- Extend Result Map-->
+	<resultMap id="extendResultMap" extends="BaseResultMap" type="com.alex.blog.model.BlogTag">
+	</resultMap>
+       
+	<!-- blog_tag table all fields -->
+	<sql id="Base_Column_List" >
+		a.id,a.tag_name,a.tag_code,a.order_sort,a.create_time,a.update_time
+	</sql>
+
+	<sql id="Extend_Column_List" >
+		a.*
+	</sql>
+   
+	<!-- 基本查询条件 -->
+	<sql id="Example_Where_Clause">
+		<where>
+			<trim  suffixOverrides="," >
+				<if test="id != null" > and id =  #{id}</if>
+				<if test="tagName != null" > and tag_name =  #{tagName}</if>
+				<if test="tagCode != null" > and tag_code =  #{tagCode}</if>
+				<if test="orderSort != null" > and order_sort =  #{orderSort}</if>
+				<if test="createTime != null" > and create_time =  #{createTime}</if>
+				<if test="updateTime != null" > and update_time =  #{updateTime}</if>
+			</trim>
+		</where>
+	</sql>
+   
+	<!-- 插入记录 -->
+	<insert id="save" parameterType="com.alex.blog.model.BlogTag" useGeneratedKeys="true" keyProperty="id" >
+		insert into blog_tag( 
+		<trim  suffixOverrides="," >
+			<if test="tagName != null">tag_name,</if>
+			<if test="tagCode != null">tag_code,</if>
+			<if test="orderSort != null">order_sort,</if>
+			<if test="createTime != null">create_time,</if>
+			<if test="updateTime != null">update_time,</if>
+		</trim>
+		) values(
+		<trim  suffixOverrides="," >
+			<if test="tagName != null">#{tagName},</if>
+			<if test="tagCode != null">#{tagCode},</if>
+			<if test="orderSort != null">#{orderSort},</if>
+			<if test="createTime != null">now(),</if>
+			<if test="updateTime != null">now(),</if>
+		</trim>
+		)
+	</insert>
+	
+	<!-- 批量插入记录 -->
+	<insert id="saveBatch" parameterType="java.util.List">
+    	insert into blog_tag(
+			id,tag_name,tag_code,order_sort,create_time,update_time
+		) values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.id},#{item.tagName},#{item.tagCode},#{item.orderSort},#{item.createTime},#{item.updateTime})
+		</foreach>  
+  	</insert>
+
+	<!-- 根据id，修改记录-->  
+	<update id="update" parameterType="com.alex.blog.model.BlogTag" >
+		update blog_tag 
+		set tag_name=#{tagName},tag_code=#{tagCode},order_sort=#{orderSort},create_time=now(),update_time=now() 
+		where id=#{id}
+	</update>
+ 
+	<!-- 修改记录，只修改只不为空的字段 -->
+	<update id="updateSelective" parameterType="com.alex.blog.model.BlogTag" >
+		update blog_tag set 
+		<trim  suffixOverrides="," >
+			<if test="tagName != null "> tag_name=#{tagName},</if>
+			<if test="tagCode != null "> tag_code=#{tagCode},</if>
+			<if test="orderSort != null "> order_sort=#{orderSort},</if>
+			<if test="createTime != null "> create_time=#{createTime},</if>
+			<if test="updateTime != null "> update_time=#{updateTime},</if>
+		</trim>
+		where id=#{id}
+	</update>
+
+	<!-- 修改记录，只修改只不为空的字段 -->
+	<update id="updateQuery" >
+		update blog_tag set 
+		<trim  suffixOverrides="," >
+			<if test="entity.tagName != null "> tag_name=#{entity.tagName},</if>
+			<if test="entity.tagCode != null "> tag_code=#{entity.tagCode},</if>
+			<if test="entity.orderSort != null "> order_sort=#{entity.orderSort},</if>
+			<if test="entity.createTime != null "> create_time=#{entity.createTime},</if>
+			<if test="entity.updateTime != null "> update_time=#{entity.updateTime},</if>
+		</trim>
+	</update>
+
+	<!-- 删除记录 -->
+	<delete id="delete" parameterType="Object">
+		delete from blog_tag
+		where id = #{id}
+	</delete>
+	
+	<!-- 按id批量删除记录 -->
+	<delete id="deleteBatchIds">
+		delete from blog_tag
+		<where>
+			id in
+			<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</where>
+	</delete>
+	
+	<!-- 按条件批量删除记录 -->
+	<delete id="deleteBatch" parameterType = "com.alex.blog.model.BlogTag">
+		delete from blog_tag
+		<include refid="Example_Where_Clause"/> 
+	</delete>
+
+
+	<!-- 根据id查询 ${codeName} -->
+	<select id="queryId"  resultMap="BaseResultMap" parameterType="Object">
+		select 
+			 <include refid="Base_Column_List" /> 
+		from blog_tag a
+		WHERE a.id = #{id}
+	</select>
+
+</mapper>   

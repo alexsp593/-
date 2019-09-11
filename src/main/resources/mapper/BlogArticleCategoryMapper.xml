@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.alex.blog.mapper.BlogArticleCategoryMapper" >
+	<!-- Base Result Map-->
+	<resultMap id="BaseResultMap" type="com.alex.blog.model.BlogArticleCategory" >
+		<result column="id" property="id"/>
+		<result column="category_name" property="categoryName"/>
+		<result column="category_code" property="categoryCode"/>
+		<result column="parent_id" property="parentId"/>
+		<result column="icon" property="icon"/>
+		<result column="order_sort" property="orderSort"/>
+		<result column="create_time" property="createTime"/>
+		<result column="update_time" property="updateTime"/>
+	</resultMap>
+
+	<!-- Extend Result Map-->
+	<resultMap id="extendResultMap" extends="BaseResultMap" type="com.alex.blog.model.BlogArticleCategory">
+	</resultMap>
+       
+	<!-- blog_article_category table all fields -->
+	<sql id="Base_Column_List" >
+		a.id,a.category_name,a.category_code,a.parent_id,a.icon,a.order_sort,a.create_time,a.update_time
+	</sql>
+
+	<sql id="Extend_Column_List" >
+		a.*
+	</sql>
+   
+	<!-- 基本查询条件 -->
+	<sql id="Example_Where_Clause">
+		<where>
+			<trim  suffixOverrides="," >
+				<if test="id != null" > and id =  #{id}</if>
+				<if test="categoryName != null" > and category_name =  #{categoryName}</if>
+				<if test="categoryCode != null" > and category_code =  #{categoryCode}</if>
+				<if test="parentId != null" > and parent_id =  #{parentId}</if>
+				<if test="icon != null" > and icon =  #{icon}</if>
+				<if test="orderSort != null" > and order_sort =  #{orderSort}</if>
+				<if test="createTime != null" > and create_time =  #{createTime}</if>
+				<if test="updateTime != null" > and update_time =  #{updateTime}</if>
+			</trim>
+		</where>
+	</sql>
+   
+	<!-- 插入记录 -->
+	<insert id="save" parameterType="com.alex.blog.model.BlogArticleCategory" useGeneratedKeys="true" keyProperty="id" >
+		insert into blog_article_category( 
+		<trim  suffixOverrides="," >
+			<if test="categoryName != null">category_name,</if>
+			<if test="categoryCode != null">category_code,</if>
+			<if test="parentId != null">parent_id,</if>
+			<if test="icon != null">icon,</if>
+			<if test="orderSort != null">order_sort,</if>
+			<if test="createTime != null">create_time,</if>
+			<if test="updateTime != null">update_time,</if>
+		</trim>
+		) values(
+		<trim  suffixOverrides="," >
+			<if test="categoryName != null">#{categoryName},</if>
+			<if test="categoryCode != null">#{categoryCode},</if>
+			<if test="parentId != null">#{parentId},</if>
+			<if test="icon != null">#{icon},</if>
+			<if test="orderSort != null">#{orderSort},</if>
+			<if test="createTime != null">now(),</if>
+			<if test="updateTime != null">now(),</if>
+		</trim>
+		)
+	</insert>
+	
+	<!-- 批量插入记录 -->
+	<insert id="saveBatch" parameterType="java.util.List">
+    	insert into blog_article_category(
+			id,category_name,category_code,parent_id,icon,order_sort,create_time,update_time
+		) values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.id},#{item.categoryName},#{item.categoryCode},#{item.parentId},#{item.icon},#{item.orderSort},#{item.createTime},#{item.updateTime})
+		</foreach>  
+  	</insert>
+
+	<!-- 根据id，修改记录-->  
+	<update id="update" parameterType="com.alex.blog.model.BlogArticleCategory" >
+		update blog_article_category 
+		set category_name=#{categoryName},category_code=#{categoryCode},parent_id=#{parentId},icon=#{icon},order_sort=#{orderSort},create_time=now(),update_time=now() 
+		where id=#{id}
+	</update>
+ 
+	<!-- 修改记录，只修改只不为空的字段 -->
+	<update id="updateSelective" parameterType="com.alex.blog.model.BlogArticleCategory" >
+		update blog_article_category set 
+		<trim  suffixOverrides="," >
+			<if test="categoryName != null "> category_name=#{categoryName},</if>
+			<if test="categoryCode != null "> category_code=#{categoryCode},</if>
+			<if test="parentId != null "> parent_id=#{parentId},</if>
+			<if test="icon != null "> icon=#{icon},</if>
+			<if test="orderSort != null "> order_sort=#{orderSort},</if>
+			<if test="createTime != null "> create_time=#{createTime},</if>
+			<if test="updateTime != null "> update_time=#{updateTime},</if>
+		</trim>
+		where id=#{id}
+	</update>
+
+	<!-- 修改记录，只修改只不为空的字段 -->
+	<update id="updateQuery" >
+		update blog_article_category set 
+		<trim  suffixOverrides="," >
+			<if test="entity.categoryName != null "> category_name=#{entity.categoryName},</if>
+			<if test="entity.categoryCode != null "> category_code=#{entity.categoryCode},</if>
+			<if test="entity.parentId != null "> parent_id=#{entity.parentId},</if>
+			<if test="entity.icon != null "> icon=#{entity.icon},</if>
+			<if test="entity.orderSort != null "> order_sort=#{entity.orderSort},</if>
+			<if test="entity.createTime != null "> create_time=#{entity.createTime},</if>
+			<if test="entity.updateTime != null "> update_time=#{entity.updateTime},</if>
+		</trim>
+	</update>
+
+	<!-- 删除记录 -->
+	<delete id="delete" parameterType="Object">
+		delete from blog_article_category
+		where id = #{id}
+	</delete>
+	
+	<!-- 按id批量删除记录 -->
+	<delete id="deleteBatchIds">
+		delete from blog_article_category
+		<where>
+			id in
+			<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</where>
+	</delete>
+	
+	<!-- 按条件批量删除记录 -->
+	<delete id="deleteBatch" parameterType = "com.alex.blog.model.BlogArticleCategory">
+		delete from blog_article_category
+		<include refid="Example_Where_Clause"/> 
+	</delete>
+
+
+	<!-- 根据id查询 ${codeName} -->
+	<select id="queryId"  resultMap="BaseResultMap" parameterType="Object">
+		select 
+			 <include refid="Base_Column_List" /> 
+		from blog_article_category a
+		WHERE a.id = #{id}
+	</select>
+
+</mapper>   

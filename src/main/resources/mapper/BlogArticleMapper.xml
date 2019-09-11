@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.alex.blog.mapper.BlogArticleMapper" >
+	<!-- Base Result Map-->
+	<resultMap id="BaseResultMap" type="com.alex.blog.model.BlogArticle" >
+		<result column="id" property="id"/>
+		<result column="title" property="title"/>
+		<result column="content" property="content"/>
+		<result column="category_id" property="categoryId"/>
+		<result column="user_id" property="userId"/>
+		<result column="is_top" property="isTop"/>
+		<result column="background_img" property="backgroundImg"/>
+		<result column="comment_nums" property="commentNums"/>
+		<result column="views_nums" property="viewsNums"/>
+		<result column="like_nums" property="likeNums"/>
+		<result column="collect_nums" property="collectNums"/>
+		<result column="order_sort" property="orderSort"/>
+		<result column="create_time" property="createTime"/>
+		<result column="update_time" property="updateTime"/>
+	</resultMap>
+
+	<!-- Extend Result Map-->
+	<resultMap id="extendResultMap" extends="BaseResultMap" type="com.alex.blog.model.BlogArticle">
+	</resultMap>
+       
+	<!-- blog_article table all fields -->
+	<sql id="Base_Column_List" >
+		a.id,a.title,a.content,a.category_id,a.user_id,a.is_top,a.background_img,a.comment_nums,a.views_nums,a.like_nums,a.collect_nums,a.order_sort,a.create_time,a.update_time
+	</sql>
+
+	<sql id="Extend_Column_List" >
+		a.*
+	</sql>
+   
+	<!-- 基本查询条件 -->
+	<sql id="Example_Where_Clause">
+		<where>
+			<trim  suffixOverrides="," >
+				<if test="id != null" > and id =  #{id}</if>
+				<if test="title != null" > and title =  #{title}</if>
+				<if test="content != null" > and content =  #{content}</if>
+				<if test="categoryId != null" > and category_id =  #{categoryId}</if>
+				<if test="userId != null" > and user_id =  #{userId}</if>
+				<if test="isTop != null" > and is_top =  #{isTop}</if>
+				<if test="backgroundImg != null" > and background_img =  #{backgroundImg}</if>
+				<if test="commentNums != null" > and comment_nums =  #{commentNums}</if>
+				<if test="viewsNums != null" > and views_nums =  #{viewsNums}</if>
+				<if test="likeNums != null" > and like_nums =  #{likeNums}</if>
+				<if test="collectNums != null" > and collect_nums =  #{collectNums}</if>
+				<if test="orderSort != null" > and order_sort =  #{orderSort}</if>
+				<if test="createTime != null" > and create_time =  #{createTime}</if>
+				<if test="updateTime != null" > and update_time =  #{updateTime}</if>
+			</trim>
+		</where>
+	</sql>
+   
+	<!-- 插入记录 -->
+	<insert id="save" parameterType="com.alex.blog.model.BlogArticle" useGeneratedKeys="true" keyProperty="id" >
+		insert into blog_article( 
+		<trim  suffixOverrides="," >
+			<if test="title != null">title,</if>
+			<if test="content != null">content,</if>
+			<if test="categoryId != null">category_id,</if>
+			<if test="userId != null">user_id,</if>
+			<if test="isTop != null">is_top,</if>
+			<if test="backgroundImg != null">background_img,</if>
+			<if test="commentNums != null">comment_nums,</if>
+			<if test="viewsNums != null">views_nums,</if>
+			<if test="likeNums != null">like_nums,</if>
+			<if test="collectNums != null">collect_nums,</if>
+			<if test="orderSort != null">order_sort,</if>
+			<if test="createTime != null">create_time,</if>
+			<if test="updateTime != null">update_time,</if>
+		</trim>
+		) values(
+		<trim  suffixOverrides="," >
+			<if test="title != null">#{title},</if>
+			<if test="content != null">#{content},</if>
+			<if test="categoryId != null">#{categoryId},</if>
+			<if test="userId != null">#{userId},</if>
+			<if test="isTop != null">#{isTop},</if>
+			<if test="backgroundImg != null">#{backgroundImg},</if>
+			<if test="commentNums != null">#{commentNums},</if>
+			<if test="viewsNums != null">#{viewsNums},</if>
+			<if test="likeNums != null">#{likeNums},</if>
+			<if test="collectNums != null">#{collectNums},</if>
+			<if test="orderSort != null">#{orderSort},</if>
+			<if test="createTime != null">now(),</if>
+			<if test="updateTime != null">now(),</if>
+		</trim>
+		)
+	</insert>
+	
+	<!-- 批量插入记录 -->
+	<insert id="saveBatch" parameterType="java.util.List">
+    	insert into blog_article(
+			id,title,content,category_id,user_id,is_top,background_img,comment_nums,views_nums,like_nums,collect_nums,order_sort,create_time,update_time
+		) values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.id},#{item.title},#{item.content},#{item.categoryId},#{item.userId},#{item.isTop},#{item.backgroundImg},#{item.commentNums},#{item.viewsNums},#{item.likeNums},#{item.collectNums},#{item.orderSort},#{item.createTime},#{item.updateTime})
+		</foreach>  
+  	</insert>
+
+	<!-- 根据id，修改记录-->  
+	<update id="update" parameterType="com.alex.blog.model.BlogArticle" >
+		update blog_article 
+		set title=#{title},content=#{content},category_id=#{categoryId},user_id=#{userId},is_top=#{isTop},background_img=#{backgroundImg},comment_nums=#{commentNums},views_nums=#{viewsNums},like_nums=#{likeNums},collect_nums=#{collectNums},order_sort=#{orderSort},create_time=now(),update_time=now() 
+		where id=#{id}
+	</update>
+ 
+	<!-- 修改记录，只修改只不为空的字段 -->
+	<update id="updateSelective" parameterType="com.alex.blog.model.BlogArticle" >
+		update blog_article set 
+		<trim  suffixOverrides="," >
+			<if test="title != null "> title=#{title},</if>
+			<if test="content != null "> content=#{content},</if>
+			<if test="categoryId != null "> category_id=#{categoryId},</if>
+			<if test="userId != null "> user_id=#{userId},</if>
+			<if test="isTop != null "> is_top=#{isTop},</if>
+			<if test="backgroundImg != null "> background_img=#{backgroundImg},</if>
+			<if test="commentNums != null "> comment_nums=#{commentNums},</if>
+			<if test="viewsNums != null "> views_nums=#{viewsNums},</if>
+			<if test="likeNums != null "> like_nums=#{likeNums},</if>
+			<if test="collectNums != null "> collect_nums=#{collectNums},</if>
+			<if test="orderSort != null "> order_sort=#{orderSort},</if>
+			<if test="createTime != null "> create_time=#{createTime},</if>
+			<if test="updateTime != null "> update_time=#{updateTime},</if>
+		</trim>
+		where id=#{id}
+	</update>
+
+	<!-- 修改记录，只修改只不为空的字段 -->
+	<update id="updateQuery" >
+		update blog_article set 
+		<trim  suffixOverrides="," >
+			<if test="entity.title != null "> title=#{entity.title},</if>
+			<if test="entity.content != null "> content=#{entity.content},</if>
+			<if test="entity.categoryId != null "> category_id=#{entity.categoryId},</if>
+			<if test="entity.userId != null "> user_id=#{entity.userId},</if>
+			<if test="entity.isTop != null "> is_top=#{entity.isTop},</if>
+			<if test="entity.backgroundImg != null "> background_img=#{entity.backgroundImg},</if>
+			<if test="entity.commentNums != null "> comment_nums=#{entity.commentNums},</if>
+			<if test="entity.viewsNums != null "> views_nums=#{entity.viewsNums},</if>
+			<if test="entity.likeNums != null "> like_nums=#{entity.likeNums},</if>
+			<if test="entity.collectNums != null "> collect_nums=#{entity.collectNums},</if>
+			<if test="entity.orderSort != null "> order_sort=#{entity.orderSort},</if>
+			<if test="entity.createTime != null "> create_time=#{entity.createTime},</if>
+			<if test="entity.updateTime != null "> update_time=#{entity.updateTime},</if>
+		</trim>
+	</update>
+
+	<!-- 删除记录 -->
+	<delete id="delete" parameterType="Object">
+		delete from blog_article
+		where id = #{id}
+	</delete>
+	
+	<!-- 按id批量删除记录 -->
+	<delete id="deleteBatchIds">
+		delete from blog_article
+		<where>
+			id in
+			<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</where>
+	</delete>
+	
+	<!-- 按条件批量删除记录 -->
+	<delete id="deleteBatch" parameterType = "com.alex.blog.model.BlogArticle">
+		delete from blog_article
+		<include refid="Example_Where_Clause"/> 
+	</delete>
+
+
+	<!-- 根据id查询 ${codeName} -->
+	<select id="queryId"  resultMap="BaseResultMap" parameterType="Object">
+		select 
+			 <include refid="Base_Column_List" /> 
+		from blog_article a
+		WHERE a.id = #{id}
+	</select>
+
+</mapper>   

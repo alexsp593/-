@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.alex.blog.mapper.BlogUserAttentionMapper" >
+	<!-- Base Result Map-->
+	<resultMap id="BaseResultMap" type="com.alex.blog.model.BlogUserAttention" >
+		<result column="id" property="id"/>
+		<result column="user_id" property="userId"/>
+		<result column="attention_user_id" property="attentionUserId"/>
+		<result column="create_time" property="createTime"/>
+	</resultMap>
+
+	<!-- Extend Result Map-->
+	<resultMap id="extendResultMap" extends="BaseResultMap" type="com.alex.blog.model.BlogUserAttention">
+	</resultMap>
+       
+	<!-- blog_user_attention table all fields -->
+	<sql id="Base_Column_List" >
+		a.id,a.user_id,a.attention_user_id,a.create_time
+	</sql>
+
+	<sql id="Extend_Column_List" >
+		a.*
+	</sql>
+   
+	<!-- 基本查询条件 -->
+	<sql id="Example_Where_Clause">
+		<where>
+			<trim  suffixOverrides="," >
+				<if test="id != null" > and id =  #{id}</if>
+				<if test="userId != null" > and user_id =  #{userId}</if>
+				<if test="attentionUserId != null" > and attention_user_id =  #{attentionUserId}</if>
+				<if test="createTime != null" > and create_time =  #{createTime}</if>
+			</trim>
+		</where>
+	</sql>
+   
+	<!-- 插入记录 -->
+	<insert id="save" parameterType="com.alex.blog.model.BlogUserAttention" useGeneratedKeys="true" keyProperty="id" >
+		insert into blog_user_attention( 
+		<trim  suffixOverrides="," >
+			<if test="userId != null">user_id,</if>
+			<if test="attentionUserId != null">attention_user_id,</if>
+			<if test="createTime != null">create_time,</if>
+		</trim>
+		) values(
+		<trim  suffixOverrides="," >
+			<if test="userId != null">#{userId},</if>
+			<if test="attentionUserId != null">#{attentionUserId},</if>
+			<if test="createTime != null">now(),</if>
+		</trim>
+		)
+	</insert>
+	
+	<!-- 批量插入记录 -->
+	<insert id="saveBatch" parameterType="java.util.List">
+    	insert into blog_user_attention(
+			id,user_id,attention_user_id,create_time
+		) values
+		<foreach collection="list" item="item" index="index" separator=",">
+			(#{item.id},#{item.userId},#{item.attentionUserId},#{item.createTime})
+		</foreach>  
+  	</insert>
+
+	<!-- 根据id，修改记录-->  
+	<update id="update" parameterType="com.alex.blog.model.BlogUserAttention" >
+		update blog_user_attention 
+		set user_id=#{userId},attention_user_id=#{attentionUserId},create_time=now() 
+		where id=#{id}
+	</update>
+ 
+	<!-- 修改记录，只修改只不为空的字段 -->
+	<update id="updateSelective" parameterType="com.alex.blog.model.BlogUserAttention" >
+		update blog_user_attention set 
+		<trim  suffixOverrides="," >
+			<if test="userId != null "> user_id=#{userId},</if>
+			<if test="attentionUserId != null "> attention_user_id=#{attentionUserId},</if>
+			<if test="createTime != null "> create_time=#{createTime},</if>
+		</trim>
+		where id=#{id}
+	</update>
+
+	<!-- 修改记录，只修改只不为空的字段 -->
+	<update id="updateQuery" >
+		update blog_user_attention set 
+		<trim  suffixOverrides="," >
+			<if test="entity.userId != null "> user_id=#{entity.userId},</if>
+			<if test="entity.attentionUserId != null "> attention_user_id=#{entity.attentionUserId},</if>
+			<if test="entity.createTime != null "> create_time=#{entity.createTime},</if>
+		</trim>
+	</update>
+
+	<!-- 删除记录 -->
+	<delete id="delete" parameterType="Object">
+		delete from blog_user_attention
+		where id = #{id}
+	</delete>
+	
+	<!-- 按id批量删除记录 -->
+	<delete id="deleteBatchIds">
+		delete from blog_user_attention
+		<where>
+			id in
+			<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+				#{item}
+			</foreach>
+		</where>
+	</delete>
+	
+	<!-- 按条件批量删除记录 -->
+	<delete id="deleteBatch" parameterType = "com.alex.blog.model.BlogUserAttention">
+		delete from blog_user_attention
+		<include refid="Example_Where_Clause"/> 
+	</delete>
+
+
+	<!-- 根据id查询 ${codeName} -->
+	<select id="queryId"  resultMap="BaseResultMap" parameterType="Object">
+		select 
+			 <include refid="Base_Column_List" /> 
+		from blog_user_attention a
+		WHERE a.id = #{id}
+	</select>
+
+</mapper>   
